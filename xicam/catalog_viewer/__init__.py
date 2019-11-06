@@ -11,7 +11,7 @@ class CatalogViewerPlugin(GUIPlugin):
     def __init__(self):
         self.imageview = CatalogView()
 
-        self.stages = {'Stage 1': GUILayout(self.imageview), }
+        self.stages = {'Viewer': GUILayout(self.imageview), }
 
         super(CatalogViewerPlugin, self).__init__()
 
