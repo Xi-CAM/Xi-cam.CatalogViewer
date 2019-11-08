@@ -16,7 +16,7 @@ class CatalogViewerPlugin(GUIPlugin):
         super(CatalogViewerPlugin, self).__init__()
 
     def appendCatalog(self, runcatalog, **kwargs):
-        xdata = runcatalog().primary.to_dask()['fccd_image'][0, :, :,
+        xdata = runcatalog().primary.to_dask()['fccd_image'].data[0, :, :,
                :]  # The test data is 4-dimensional; ignoring last dim
         self.imageview.setImage(MetaXArray(xdata))
 
