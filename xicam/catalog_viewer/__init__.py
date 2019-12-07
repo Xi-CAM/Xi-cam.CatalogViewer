@@ -10,12 +10,14 @@ class CatalogViewerPlugin(GUIPlugin):
 
     def __init__(self):
         self.imageview = XArrayView()
+        self._catalog = None
 
         self.stages = {'Viewer': GUILayout(self.imageview), }
 
         super(CatalogViewerPlugin, self).__init__()
 
     def appendCatalog(self, runcatalog, **kwargs):
+        self._catalog = runcatalog
         xdata = runcatalog().primary.to_dask()['fccd_image'].data[0, :, :,
                :]  # The test data is 4-dimensional; ignoring last dim
         self.imageview.setImage(MetaXArray(xdata))
