@@ -2,16 +2,15 @@ from qtpy.QtWidgets import QLabel, QComboBox, QHBoxLayout, QWidget, QSpacerItem,
 from xicam.core import msg
 from xicam.plugins import GUIPlugin, GUILayout
 from xicam.gui.widgets.imageviewmixins import XArrayView, CatalogView
-from xicam.gui.bluesky.summary import SummaryWidget
 import logging
-
-log = logging.getLogger('catalog_viewer')
+from xicam.core import msg
+# log = logging.getLogger('catalog_viewer')
 
 class CatalogViewerBlend(XArrayView, CatalogView):
 
     def __init__(self, *args, **kwargs):
-        #Q: CatalogViewerBlend inherits methods from XArrayView and CatalogView
-        # --> Therefore super allows us to access both methods when calling super() from Blend
+        # CatalogViewerBlend inherits methods from XArrayView and CatalogView
+        # super allows us to access both methods when calling super() from Blend
         super(CatalogViewerBlend, self).__init__(*args, **kwargs)
 
 
@@ -38,7 +37,7 @@ class CatalogViewerPlugin(GUIPlugin):
         self.layout.addSpacerItem(QSpacerItem(0, 0, QSizePolicy.Expanding, QSizePolicy.Minimum))
         self.parent_widget.setLayout(self.layout)
         self.catalog_viewer = CatalogViewerBlend()
-        # self.stream_viewer = SummaryWidget()
+
         self.stages = {'Viewer': GUILayout(top=self.parent_widget, 
                        center=self.catalog_viewer), }
         super(CatalogViewerPlugin, self).__init__()
@@ -47,31 +46,46 @@ class CatalogViewerPlugin(GUIPlugin):
         try:
             self.catalog_viewer.fieldChanged(new_device)
         except Exception as e:
-            log.error(e)
+            msg.logError(e)
 
     def stream_changed(self, new_stream):
         try:
             self.catalog_viewer.streamChanged(new_stream)
         except Exception as e:
-            log.error(e)
+            msg.logError(e)
 
     def appendCatalog(self, run_catalog, **kwargs):
         try:
             msg.showMessage(f"Loading primary image for {run_catalog.name}")
             self.catalog_viewer.setCatalog(run_catalog, 'primary', None)
-            stream_fields = run_catalog.primary.metadata['stop']['num_events'].keys() or {}
             all_fields = run_catalog.primary.metadata['descriptors'][0]['data_keys']
             image_fields = []
             for field, field_descriptor in all_fields.items():
                 field_shape = len(field_descriptor['shape'])
                 if field_shape > 1 and field_shape < 5:
+                    # if field contains at least 1 entry that is at least one-dimensional (shape=2) 
+                    # or 2-dimensional (shape=3) or up to 3-dimensional (shape=4)
+                    # then add field e.g. 'fccd_image'
                     image_fields.append(field)
+
+            stream_fields = []
+            for stream in list(run_catalog):
+                # check if image_field exists in different streams
+                # if yes -> add to stream_fields -> can be selected in CatalogViewer select_stream
+                if image_fields[0] in run_catalog[stream].metadata['descriptors'][0]['data_keys']:
+                    stream_fields.append(stream)
+                else:
+                    msg.showMessage("{0} stream does not contain {1} image data".format(stream, image_fields[0]))
+                #ToDo:
+                # How to handle multiple image fields?
+                # Where/how to display non 2D streams?
+                
             self.field_combo_box.clear()
             self.field_combo_box.addItems(image_fields)
             self.field_combo_box_stream.clear()
             self.field_combo_box_stream.addItems(stream_fields)
         except Exception as e:
-            log.error(e)
+            msg.logError(e)
             msg.showMessage("Unable to display: ", str(e))
 
     def appendHeader(self):
