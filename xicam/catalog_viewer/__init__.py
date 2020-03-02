@@ -22,7 +22,7 @@ class CatalogViewerPlugin(GUIPlugin):
         # add combobox to select stream
         self.field_label_stream = QLabel('Select stream:')
         self.field_combo_box_stream = QComboBox()
-        self.field_combo_box_stream.setFixedWidth(120)
+        self.field_combo_box_stream.setFixedWidth(150)
         self.layout.addWidget(self.field_label_stream)
         self.layout.addWidget(self.field_combo_box_stream)
         self.field_combo_box_stream.currentTextChanged.connect(self.stream_changed)
@@ -77,9 +77,9 @@ class CatalogViewerPlugin(GUIPlugin):
                 else:
                     msg.showMessage("{0} stream does not contain {1} image data".format(stream, image_fields[0]))
                 #ToDo:
-                # How to handle multiple image fields?
-                # Where/how to display non 2D streams?
-                
+                # Handle multiple image fields per stream
+                # Where/how to display non 2D stream fields --> such as metadata?
+
             self.field_combo_box.clear()
             self.field_combo_box.addItems(image_fields)
             self.field_combo_box_stream.clear()
