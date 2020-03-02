@@ -72,12 +72,12 @@ class CatalogViewerPlugin(GUIPlugin):
             for stream in list(run_catalog):
                 # check if image_field exists in different streams
                 # if yes -> add to stream_fields -> can be selected in CatalogViewer select_stream
-                if image_fields[0] in run_catalog[stream].metadata['descriptors'][0]['data_keys']:
-                    stream_fields.append(stream)
-                else:
-                    msg.showMessage("{0} stream does not contain {1} image data".format(stream, image_fields[0]))
+                for image in image_fields:
+                    if image in run_catalog[stream].metadata['descriptors'][0]['data_keys'] and stream not in stream_fields:
+                        stream_fields.append(stream)
+                    else:
+                        msg.showMessage("{0} stream does not contain {1} image data".format(stream, image_fields[0]))
                 #ToDo:
-                # Handle multiple image fields per stream
                 # Where/how to display non 2D stream fields --> such as metadata?
 
             self.field_combo_box.clear()
