@@ -20,7 +20,7 @@ class CatalogViewerPlugin(GUIPlugin):
         self.layout = QHBoxLayout()
         self.parent_widget = QWidget()
         # add combobox to select stream
-        self.field_label_stream = QLabel('Select stream:')
+        self.stream_label = QLabel('Select stream:')
         self.stream_combo_box = QComboBox()
         self.stream_combo_box.setFixedWidth(150)
         self.layout.addWidget(self.field_label_stream)
