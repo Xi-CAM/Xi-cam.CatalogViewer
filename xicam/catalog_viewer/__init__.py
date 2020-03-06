@@ -51,12 +51,13 @@ class CatalogViewerPlugin(GUIPlugin):
 
     def stream_changed(self, new_stream):
         try:
-            fields = get_fields_for_stream(self.stream_fields, new_stream)
-            self.field_combo_box.clear()
-            self.field_combo_box.addItems(fields)
             self.catalog_viewer.streamChanged(new_stream)
         except Exception as e:
             msg.logError(e)
+        finally:
+            fields = get_fields_for_stream(self.stream_fields, new_stream)
+            self.field_combo_box.clear()
+            self.field_combo_box.addItems(fields)
 
     def appendCatalog(self, run_catalog, **kwargs):
         try:
