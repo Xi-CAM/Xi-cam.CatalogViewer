@@ -105,5 +105,5 @@ def get_all_image_fields(run_catalog):
                 # or 2-dimensional (shape=3) or up to 3-dimensional (shape=4)
                 # then add field e.g. 'fccd_image'
                 stream_field = (stream, field_name)
-                all_fields.append(stream_field)
+                all_image_fields.append(stream_field)
     return all_fields
