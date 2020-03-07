@@ -23,7 +23,7 @@ class CatalogViewerPlugin(GUIPlugin):
         self.stream_label = QLabel('Select stream:')
         self.stream_combo_box = QComboBox()
         self.stream_combo_box.setFixedWidth(150)
-        self.layout.addWidget(self.field_label_stream)
+        self.layout.addWidget(self.stream_label)
         self.layout.addWidget(self.stream_combo_box)
         self.stream_combo_box.currentTextChanged.connect(self.stream_changed)
         # add combobox to select image in stream
