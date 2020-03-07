@@ -95,7 +95,7 @@ def get_all_streams(run_catalog):
 
 def get_all_image_fields(run_catalog):
     all_image_fields = []
-    for stream in list(run_catalog):
+    for stream in get_all_streams(run_catalog):
         stream_fields = get_stream_data_keys(run_catalog, stream)
         field_names = stream_fields.keys()
         for field_name in field_names:
