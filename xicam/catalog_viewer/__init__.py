@@ -20,10 +20,10 @@ class CatalogViewerPlugin(GUIPlugin):
         self.layout = QHBoxLayout()
         self.parent_widget = QWidget()
         # add combobox to select stream
-        self.field_label_stream = QLabel('Select stream:')
+        self.stream_label = QLabel('Select stream:')
         self.stream_combo_box = QComboBox()
         self.stream_combo_box.setFixedWidth(150)
-        self.layout.addWidget(self.field_label_stream)
+        self.layout.addWidget(self.stream_label)
         self.layout.addWidget(self.stream_combo_box)
         self.stream_combo_box.currentTextChanged.connect(self.stream_changed)
         # add combobox to select image in stream
@@ -57,6 +57,10 @@ class CatalogViewerPlugin(GUIPlugin):
             self.catalog_viewer.streamChanged(new_stream)
         except Exception as e:
             msg.logError(e)
+        finally:
+            fields = get_fields_for_stream(self.stream_fields, new_stream)
+            self.field_combo_box.clear()
+            self.field_combo_box.addItems(fields)
 
     def appendCatalog(self, run_catalog, **kwargs):
         try:
@@ -112,4 +116,5 @@ def get_all_image_fields(run_catalog):
 
 
 
+#Problem: primary image field does not show up anymore...
 #Problem: primary image field does not show up anymore...
