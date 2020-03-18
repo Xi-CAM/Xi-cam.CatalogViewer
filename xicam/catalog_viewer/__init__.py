@@ -53,7 +53,7 @@ class CatalogViewerPlugin(GUIPlugin):
         try:
             fields = get_fields_for_stream(self.stream_fields, new_stream)
             self.field_combo_box.clear()
-            self.field_combo_box.addItems(fields)
+            self.field_combo_box.addItems(fields)           # needs a list of str
             self.catalog_viewer.streamChanged(new_stream)
         except Exception as e:
             msg.logError(e)
@@ -67,9 +67,8 @@ class CatalogViewerPlugin(GUIPlugin):
             self.catalog_viewer.setCatalog(run_catalog, 'primary', None)
             # try and startup with primary catalog and whatever fields it has
             filtered_stream_fields = get_fields_for_stream(self.stream_fields, 'primary')
-            self.stream_combo_box.clear()
-            self.stream_combo_box.addItems(get_all_streams(run_catalog))
-            self.field_combo_box.clear()
+            self.stream_combo_box.addItems(list(get_all_image_fields(run_catalog).keys()))
+            # self.stream_combo_box.addItems(list(stream_fields_dict.keys()))
             self.field_combo_box.addItems(filtered_stream_fields)
 
         except Exception as e:
@@ -79,22 +78,22 @@ class CatalogViewerPlugin(GUIPlugin):
     def appendHeader(self):
         ...
 
-
+### small helper functions
 def get_stream_data_keys(run_catalog, stream):
     return run_catalog[stream].metadata['descriptors'][0]['data_keys']
 
-
 def get_fields_for_stream(stream_fields, stream):
-    return [stream_field_tuple[1] for stream_field_tuple in stream_fields if stream_field_tuple[0] == stream]
-
+    # return [stream_field_tuple[1] for stream_field_tuple in stream_fields if stream_field_tuple[0] == stream]
+    return stream_fields[stream]
 
 def get_all_streams(run_catalog):
     return list(run_catalog)
 
 
 def get_all_image_fields(run_catalog):
-    all_fields = []
-    for stream in list(run_catalog):
+    #image_fields = []
+    all_streams_image_fields = {}
+    for stream in get_all_streams(run_catalog):
         stream_fields = get_stream_data_keys(run_catalog, stream)
         field_names = stream_fields.keys()
         for field_name in field_names:
@@ -103,6 +102,14 @@ def get_all_image_fields(run_catalog):
                 # if field contains at least 1 entry that is at least one-dimensional (shape=2) 
                 # or 2-dimensional (shape=3) or up to 3-dimensional (shape=4)
                 # then add field e.g. 'fccd_image'
-                stream_field = (stream, field_name)
-                all_fields.append(stream_field)
-    return all_fields
+                if stream in all_streams_image_fields.keys(): #add values to stream dict key
+                    all_streams_image_fields[stream].append(field_name) 
+                else: #if stream does not already exist in dict -> create new entry
+                    all_streams_image_fields[stream]=[field_name]
+            #TODO how to treat non image data fields in streams
+            #else:
+    return all_streams_image_fields
+
+
+
+#Problem: primary image field does not show up anymore...
