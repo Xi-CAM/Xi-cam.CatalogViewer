@@ -45,22 +45,23 @@ class CatalogViewerPlugin(GUIPlugin):
 
     def field_changed(self, new_device):
         try:
+            self.catalog_viewer.clear()
+            if new_device is None or len(new_device) == 0:
+                return
             self.catalog_viewer.fieldChanged(new_device)
         except Exception as e:
             msg.logError(e)
 
     def stream_changed(self, new_stream):
         try:
-            fields = get_fields_for_stream(self.stream_fields, new_stream)
+            if new_stream is None or len(new_stream) == 0:
+                return
+            fields = self.stream_fields[new_stream]
             self.field_combo_box.clear()
             self.field_combo_box.addItems(fields)           # needs a list of str
             self.catalog_viewer.streamChanged(new_stream)
         except Exception as e:
-            msg.logError(e)
-        finally:
-            fields = get_fields_for_stream(self.stream_fields, new_stream)
-            self.field_combo_box.clear()
-            self.field_combo_box.addItems(fields)
+            msg.logError(e) 
 
     def appendCatalog(self, run_catalog, **kwargs):
         try:
@@ -68,13 +69,13 @@ class CatalogViewerPlugin(GUIPlugin):
             self.field_combo_box.clear()
             self.stream_combo_box.clear()
             msg.showMessage(f"Loading primary image for {run_catalog.name}")
-            self.catalog_viewer.setCatalog(run_catalog, 'primary', None)
             # try and startup with primary catalog and whatever fields it has
-            filtered_stream_fields = get_fields_for_stream(self.stream_fields, 'primary')
-            self.stream_combo_box.addItems(list(get_all_image_fields(run_catalog).keys()))
-            # self.stream_combo_box.addItems(list(stream_fields_dict.keys()))
-            self.field_combo_box.addItems(filtered_stream_fields)
-
+            if 'primary' in self.stream_fields:
+                default_stream_name = 'primary'
+            else:
+                default_stream_name = self.stream_fields.keys()[0]
+            self.catalog_viewer.setCatalog(run_catalog, default_stream_name, None)
+            self.stream_combo_box.addItems(list(self.stream_fields.keys()))
         except Exception as e:
             msg.logError(e)
             msg.showMessage("Unable to display: ", str(e))
@@ -86,9 +87,6 @@ class CatalogViewerPlugin(GUIPlugin):
 def get_stream_data_keys(run_catalog, stream):
     return run_catalog[stream].metadata['descriptors'][0]['data_keys']
 
-def get_fields_for_stream(stream_fields, stream):
-    # return [stream_field_tuple[1] for stream_field_tuple in stream_fields if stream_field_tuple[0] == stream]
-    return stream_fields[stream]
 
 def get_all_streams(run_catalog):
     return list(run_catalog)

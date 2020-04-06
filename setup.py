@@ -36,5 +36,13 @@ setup(
     install_requires=install_requires,
     dependency_links=dependency_links,
     author_email='ronpandolfi@lbl.gov',
-    entry_points={'xicam.plugins.GUIPlugin': ['catalog_viewer_plugin = xicam.catalog_viewer:CatalogViewerPlugin']}
+    entry_points={
+        'xicam.plugins.GUIPlugin': [
+            'catalog_viewer_plugin = xicam.catalog_viewer:CatalogViewerPlugin'],
+        'databroker.handlers': [
+            'JPEG = xicam.catalog_viewer.image_handlers:JPEGHandler',
+            'TIFF = xicam.catalog_viewer.image_handlers:TIFFHandler',
+            'EDF = xicam.catalog_viewer.image_handlers:EDFHandler'
+        ]
+        }
 )
