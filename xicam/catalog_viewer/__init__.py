@@ -69,14 +69,15 @@ class CatalogViewerPlugin(GUIPlugin):
     def appendCatalog(self, run_catalog, **kwargs):
         try:
             self.stream_fields = get_all_image_fields(run_catalog)
+            stream_names = get_all_streams(run_catalog)
             self.field_combo_box.clear()
             self.stream_combo_box.clear()
             msg.showMessage(f"Loading primary image for {run_catalog.name}")
             # try and startup with primary catalog and whatever fields it has
             if "primary" in self.stream_fields:
-                default_stream_name = "primary"
+                default_stream_name = "primary" if "primary" in stream_names else stream_names[0]
             else:
-                default_stream_name = self.stream_fields.keys()[0]
+                default_stream_name = list(self.stream_fields.keys())[0]
             self.catalog_viewer.setCatalog(run_catalog, default_stream_name, None)
             self.stream_combo_box.addItems(list(self.stream_fields.keys()))
         except Exception as e:
