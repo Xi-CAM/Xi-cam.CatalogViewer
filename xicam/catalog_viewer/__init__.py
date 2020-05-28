@@ -1,11 +1,6 @@
-from qtpy.QtWidgets import QLabel, QComboBox, QHBoxLayout, QWidget, QSpacerItem, QSizePolicy
 from xicam.core import msg
 from xicam.plugins import GUIPlugin, GUILayout
 from xicam.gui.widgets.imageviewmixins import XArrayView, CatalogView, StreamSelector, FieldSelector
-import logging
-from xicam.core import msg
-
-# log = logging.getLogger('catalog_viewer')
 
 
 class CatalogViewerBlend(StreamSelector, FieldSelector, XArrayView, CatalogView):
@@ -28,7 +23,6 @@ class CatalogViewerPlugin(GUIPlugin):
     def appendCatalog(self, run_catalog, **kwargs):
         self.catalog_viewer.clear()
         try:
-
             msg.showMessage(f"Loading image for {run_catalog.name}")
             self.catalog_viewer.setCatalog(run_catalog)
         except Exception as e:
