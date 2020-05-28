@@ -29,4 +29,3 @@ class CatalogViewerPlugin(GUIPlugin):
         except Exception as e:
             msg.logError(e)
             msg.showMessage("Unable to display: ", str(e))
-s
