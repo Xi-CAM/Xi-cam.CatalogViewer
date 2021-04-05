@@ -1,13 +1,14 @@
 from xicam.core import msg
 from xicam.plugins import GUIPlugin, GUILayout
-from xicam.gui.widgets.imageviewmixins import XArrayView, CatalogView, StreamSelector, FieldSelector
+from xicam.gui.widgets.imageviewmixins import XArrayView, CatalogView, StreamSelector, FieldSelector, CatalogImagePlotView
 
 
-class CatalogViewerBlend(StreamSelector, FieldSelector, CatalogView):
+class CatalogViewerBlend(StreamSelector, FieldSelector, CatalogImagePlotView):
     def __init__(self, *args, **kwargs):
         # CatalogViewerBlend inherits methods from XArrayView and CatalogView
         # super allows us to access both methods when calling super() from Blend
-        super(CatalogViewerBlend, self).__init__(*args, **kwargs)
+        # field_filter None means all data will be selectable (not just default of image data)
+        super(CatalogViewerBlend, self).__init__(*args, field_filter=None, **kwargs)
 
 
 class CatalogViewerPlugin(GUIPlugin):
