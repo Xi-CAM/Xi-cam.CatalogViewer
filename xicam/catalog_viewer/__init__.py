@@ -3,7 +3,7 @@ from xicam.plugins import GUIPlugin, GUILayout
 from xicam.gui.widgets.imageviewmixins import XArrayView, CatalogView, StreamSelector, FieldSelector, CatalogImagePlotView
 
 
-class CatalogViewerBlend(StreamSelector, FieldSelector, CatalogImagePlotView):
+class CatalogViewerBlend(CatalogImagePlotView):
     def __init__(self, *args, **kwargs):
         # CatalogViewerBlend inherits methods from XArrayView and CatalogView
         # super allows us to access both methods when calling super() from Blend
